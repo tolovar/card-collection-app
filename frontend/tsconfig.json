@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "es6", // specifico la versione di JavaScript da utilizzare
+    "module": "commonjs", // specifico il sistema di moduli da utilizzare
+    "strict": true, // attivo il controllo rigoroso dei tipi
+    "jsx": "react", // specifico che utilizzo React
+    "esModuleInterop": true, // abilito l'interoperabilità con i moduli ES
+    "skipLibCheck": true, // salto il controllo delle librerie
+    "forceConsistentCasingInFileNames": true, // forzo la coerenza nei nomi dei file
+    "lib": ["dom", "es2016"], // specifico le librerie da includere
+    "baseUrl": "./src", // specifico la cartella base per la risoluzione dei moduli
+    "paths": {
+      "@/*": ["*"] // mappo il percorso per importare i moduli
+    }
+  },
+  "include": [
+    "src" // includo la cartella src per la compilazione
+  ],
+  "exclude": [
+    "node_modules", // escludo la cartella node_modules
+    "build" // escludo la cartella build
+  ]
+}
