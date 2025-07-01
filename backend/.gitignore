@@ -6,18 +6,13 @@
 
 /doc/
 
-
 /.fetch
-
 
 erl_crash.dump
 
-
 *.ez
 
-
 /tmp/
-
 
 backend-*.tar
 
