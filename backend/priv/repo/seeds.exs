@@ -7,6 +7,7 @@ alias Backend.Cards.CardUtils
 def build_zip do
   Enum.zip(CardUtils.all_suits(), CardUtils.all_names())
 end
+
 def build do
 cards =
   for {suit_code, suit_name} <- CardUtils.all_suits(),
@@ -44,6 +45,7 @@ Enum.reduce(CardUtils.all_suits(), [], fn {suit_code, suit_name}, acc ->
   suits_cards ++ acc
 end)
 end
+
 # pattern matching per assegnare il seme alla carta tramiet ID
 def assign_suit_bastoni("B" <> num), do: %{suit: "bastoni"}
 def assign_suit_coppe("C" <> num), do: %{suit: "coppe"}
@@ -68,6 +70,6 @@ Enum.each([], fn card ->
   #value = card_value_from_name(String.trim(card.name))
   #IO.inspect({card.name, value})
 end)
-
 end
+
 end
