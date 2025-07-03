@@ -3,12 +3,10 @@ defmodule BackendWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
-    plug BackendWeb.Plugs.AuthPipeline
-    plug BackendWeb.Plugs.LoadUserFromToken
   end
 
   pipeline :jwt_authenticated do
-    plug BackendWeb.AuthPipeline
+    plug BackendWeb.Plugs.AuthPipeline
   end
 
   # le rotte pubbliche (registrazione e login) restano fuori
@@ -31,6 +29,8 @@ defmodule BackendWeb.Router do
     post "/auth/refresh", AuthController, :refresh # refresh token protetto
     post "/auth/change_password", AuthController, :change_password # cambio password protetto
     post "/auth/update_profile", AuthController, :update_profile # aggiorno profilo protetto
+
+    match :*, "/*path", BackendWeb.FallbackController, :not_found
   end
 
   # abilito LiveDashboard e MailboxPreview in ambiente di sviluppo
