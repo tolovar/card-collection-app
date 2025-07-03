@@ -22,9 +22,9 @@ defmodule BackendWeb do
         formats: [:html, :json],
         layouts: [html: BackendWeb.Layouts]
 
-      use Gettext, backend: BackendWeb.Gettext
-
       import Plug.Conn
+      import BackendWeb.Gettext
+      alias BackendWeb.Router.Helpers, as: Routes
 
       unquote(verified_routes())
     end
