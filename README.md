@@ -1,6 +1,5 @@
-<<<<<<< HEAD
 # card_collection_app
-=======
+
 # Contenuto del file: /card-collection-app/card-collection-app/README.md
 
 # Progetto Card Collection App
