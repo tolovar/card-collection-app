@@ -1,0 +1,70 @@
+defmodule Backend.Cards.CardUtils do
+  @suits [
+    {"bastoni"},
+    {"coppe"},
+    {"denari"},
+    {"spade"}
+  ]
+
+  @names [
+    {"asso"},
+    {"due"},
+    {"tre"},
+    {"quattro"},
+    {"cinque"},
+    {"sei"},
+    {"sette"},
+    {"fante"},
+    {"cavallo"},
+    {"re"}
+  ]
+  
+  @values [
+    {1},
+    {2},
+    {3},
+    {4},
+    {5},
+    {6},
+    {7},
+    {8},
+    {9},
+    {10}
+  ]
+  
+  @points [
+    {11},
+    {0},
+    {10},
+    {0},
+    {0},
+    {0},
+    {0},
+    {2},
+    {3},
+    {4}
+  ]
+
+  @cards [
+    %{name: "asso",    value: 1,  points: 11},
+    %{name: "due",     value: 2,  points: 0},
+    %{name: "tre",     value: 3,  points: 10},
+    %{name: "quattro", value: 4,  points: 0},
+    %{name: "cinque",  value: 5,  points: 0},
+    %{name: "sei",     value: 6,  points: 0},
+    %{name: "sette",   value: 7,  points: 0},
+    %{name: "fante",   value: 8,  points: 2},
+    %{name: "cavallo", value: 9,  points: 3},
+    %{name: "re",      value: 10, points: 4}
+  ]
+
+  def all_suits, do: [
+    {"B", "bastoni"},
+    {"C", "coppe"},
+    {"D", "denari"},
+    {"S", "spade"}
+  ]
+  def all_cards, do: @cards
+
+  def assign_suit(suit_code), do: Enum.find(@suits, fn {code, _} -> code == suit_code end) |> elem(1)
+end

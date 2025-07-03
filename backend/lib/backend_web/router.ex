@@ -21,7 +21,7 @@ defmodule BackendWeb.Router do
 
     pipe_through :jwt_authenticated
 
-    # qui metto tutte le rotte che voglio proteggere
+    # le rotte che voglio proteggere
     resources "/cards", CardController, except: [:new, :edit]
     resources "/decks", DeckController, except: [:new, :edit]
     resources "/user_cards", UserCardController, except: [:new, :edit]
