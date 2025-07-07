@@ -1,4 +1,4 @@
-defmodule Pippo.Paperino do
+defmodule Backend.Repo.Seeds do
   alias Backend.Cards.CardUtils
 
   # automatizzo la creazione delle carte di briscola sicilian
