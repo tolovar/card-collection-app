@@ -76,7 +76,7 @@ defmodule Backend.Decks do
   end
 
   def add_card_to_deck(deck_id, card_id) do
-    deck = get_deck_by_id(deck_id)
+    deck = get_deck_by_id(deck_id) |> Repo.preload(:cards)
     card = Repo.get!(Backend.Cards.Card, card_id)
 
     changeset = Ecto.Changeset.change(deck)
@@ -86,7 +86,7 @@ defmodule Backend.Decks do
   end
 
   def remove_card_from_deck(deck_id, card_id) do
-    deck = get_deck_by_id(deck_id)
+    deck = get_deck_by_id(deck_id) |> Repo.preload(:cards)
     card = Repo.get!(Backend.Cards.Card, card_id)
 
     changeset = Ecto.Changeset.change(deck)

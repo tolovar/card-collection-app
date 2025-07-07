@@ -9,7 +9,7 @@ defmodule BackendWeb.CardController do
 
   # mostro tutte le carte
   def index(conn, params) do
-    cards = Backend.Cards.list_cards(params)
+    cards = Cards.list_cards(params)
     cards = Repo.preload(cards, [:decks])
     render(conn, "index.json", cards: cards)
   end
