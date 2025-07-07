@@ -6,5 +6,4 @@ defmodule BackendWeb.AuthPipeline do
   # verifico la presenza e la validità del token
   plug Guardian.Plug.VerifyHeader, realm: "Bearer"
   plug Guardian.Plug.LoadResource, allow_blank: true
-  plug BackendWeb.Plugs.LoadUserFromToken
 end

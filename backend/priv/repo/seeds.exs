@@ -22,7 +22,7 @@ defmodule Backend.Repo.Seeds do
   end
 
   def build_zip do
-    Enum.zip(CardUtils.all_suits(), CardUtils.all_names(), CardUtilas.all_values(), CardUtils.all_points())
+    Enum.zip(CardUtils.all_suits(), CardUtils.all_names(), CardUtils.all_values(), CardUtils.all_points())
   end
 
 
