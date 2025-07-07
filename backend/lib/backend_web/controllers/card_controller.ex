@@ -8,8 +8,8 @@ defmodule BackendWeb.CardController do
   action_fallback BackendWeb.FallbackController
 
   # mostro tutte le carte
-  def index(conn, _params) do
-    cards = Cards.list_cards()
+  def index(conn, params) do
+    cards = Backend.Cards.list_cards(params)
     cards = Repo.preload(cards, [:decks])
     render(conn, "index.json", cards: cards)
   end
