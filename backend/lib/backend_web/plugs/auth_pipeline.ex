@@ -5,5 +5,5 @@ defmodule BackendWeb.AuthPipeline do
 
   # verifico la presenza e la validità del token
   plug Guardian.Plug.VerifyHeader, realm: "Bearer"
-  plug Guardian.Plug.LoadResource, allow_blank: true
+  plug Guardian.Plug.LoadResource, allow_blank  git checkout -b "feat: filtri di ricerca": true
 end
