@@ -19,9 +19,10 @@ export interface Deck {
 // definisco un'interfaccia per rappresentare un utente
 export interface User {
     id: number; // identificatore unico dell'utente
-    username: string; // nome utente
     email: string; // email dell'utente
-    collections: Card[]; // collezione personale di carte dell'utente
+    collections?: Card[]; // collezione personale di carte dell'utente (opzionale)
+    is_admin: boolean; // se l'utente è admin
+    role?: string;     // se voglio gestire anche i ruoli
 }
 
 // definisco un'interfaccia per rappresentare la risposta dell'API per le carte

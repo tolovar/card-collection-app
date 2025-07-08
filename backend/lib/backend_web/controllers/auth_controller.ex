@@ -7,7 +7,16 @@ defmodule BackendWeb.AuthController do
   def register(conn, %{"email" => email, "password" => password}) do
     case Accounts.register_user(%{"email" => email, "password" => password}) do
       {:ok, user} ->
-        json(conn, %{id: user.id, email: user.email})
+        {:ok, token, _claims} = Guardian.encode_and_sign(user)
+        json(conn, %{
+          token: token,
+          user: %{
+            id: user.id,
+            email: user.email,
+            is_admin: user.is_admin,
+            role: user.role
+          }
+        })
       {:error, _changeset} ->
         conn
         |> put_status(:bad_request)
@@ -21,7 +30,15 @@ defmodule BackendWeb.AuthController do
     cond do
       user && Bcrypt.verify_pass(password, user.password_hash) ->
         {:ok, token, _claims} = Guardian.encode_and_sign(user)
-        json(conn, %{token: token})
+        json(conn, %{
+          token: token,
+          user: %{
+            id: user.id,
+            email: user.email,
+            is_admin: user.is_admin,
+            role: user.role
+          }
+        })
       true ->
         conn
         |> put_status(:unauthorized)

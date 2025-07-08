@@ -1,5 +1,7 @@
 defmodule Backend.Repo.Seeds do
   alias Backend.Cards.CardUtils
+  alias Backend.Accounts
+  alias Backend.Repo
 
   # automatizzo la creazione delle carte di briscola sicilian
   # creo una lista di mappe con le carte, utilizzando i dati delle funzioni di CardUtils
@@ -68,5 +70,28 @@ defmodule Backend.Repo.Seeds do
 
   def value_from_id(<<_suit, rest::binary>>) do
     String.to_integer(rest)
+  end
+
+  # creo un utente admin di default
+  def create_admin_user do
+    case Accounts.get_user_by_email("admin@example.com") do
+      nil ->
+        # creo l'admin se non esiste
+        case Accounts.register_user(%{
+          "email" => "admin@example.com",
+          "password" => "Admin123!"
+        }) do
+          {:ok, user} ->
+            # aggiorno l'utente per renderlo admin
+            user
+            |> Ecto.Changeset.change(%{is_admin: true})
+            |> Repo.update()
+            IO.puts("Admin user created: admin@example.com")
+          {:error, changeset} ->
+            IO.puts("Error creating admin user: #{inspect(changeset.errors)}")
+        end
+      _user ->
+        IO.puts("Admin user already exists")
+    end
   end
 end

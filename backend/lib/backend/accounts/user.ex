@@ -10,6 +10,7 @@ defmodule Backend.Accounts.User do
     field :password_hash, :string
     field :password, :string, virtual: true
     field :role, :string, default: "user"
+    field :is_admin, :boolean, default: false
 
     timestamps()
   end
@@ -36,7 +37,7 @@ defmodule Backend.Accounts.User do
   # changeset per l'aggiornamento di un utente
   def update_changeset(user, attrs) do
     user
-    |> cast(attrs, [:email, :password])
+    |> cast(attrs, [:email, :password, :is_admin])
     |> validate_required([:email])
     |> unique_constraint(:email)
     |> validate_length(:password, min: 8, max: 12)
