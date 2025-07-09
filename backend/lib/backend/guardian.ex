@@ -1,12 +1,9 @@
 defmodule Backend.Guardian do
   use Guardian, otp_app: :backend
 
-  # restituisco l'id dell'utente come subject del token
-  def subject_for_token(user, _claims) do
-    {:ok, to_string(user.id)}
-  end
+  def subject_for_token(user, _claims), do: {:ok, to_string(user.id)}
 
-  # aggiungo tutti i dati dell'utente (tranne la password) nei claims del token
+  # aggiungo tutti i dati dell'utente (tranne i campi sensibili) nei claims
   def build_claims(claims, user, _opts) do
     user_map =
       user
@@ -17,12 +14,17 @@ defmodule Backend.Guardian do
     {:ok, claims}
   end
 
-  #TODO: recuperare l'utente dal token e non dall'id, visto che a questo punto il token contiene più informazioni
-        # e mi sembra più pulito che non dover fare una query al database per recuperare l'utente
+  # recupero l'utente direttamente dai claims
+  def resource_from_claims(%{"user" => user_map}) when is_map(user_map) do
+    {:ok, struct(Backend.Accounts.User, user_map)}
+  end
 
-  # recupero l'utente a partire dal subject del token
+  # se non trovo l'utente nei claims,
+  # fallback: recupero l'utente dal database tramite id
   def resource_from_claims(%{"sub" => id}) do
-    # cerco l'utente tramite l'id
+    # se l'id è un intero, lo converto in stringa
+    id = if is_integer(id), do: Integer.to_string(id), else: id
+    # recupero l'utente dal database
     case Backend.Accounts.get_user(id) do
       nil -> {:error, :not_found}
       user -> {:ok, user}
