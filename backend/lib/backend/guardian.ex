@@ -30,4 +30,8 @@ defmodule Backend.Guardian do
       user -> {:ok, user}
     end
   end
+
+  # TODO: se un utente cambia email, ruolo o permessi, i token già emessi
+  # non riflettono il cambiamento finché non vengono rigenerati
+
 end
