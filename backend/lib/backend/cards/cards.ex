@@ -32,7 +32,7 @@ defmodule Backend.Cards do
       nil -> query
       field ->
         dir = Map.get(opts, "order_dir", "asc")
-        order_by(query, [{^String.to_atom(dir), field(query, ^String.to_atom(field))}])
+        order_by(query, [{^String.to_atom(dir), ^String.to_atom(field)}])
     end
   end
 

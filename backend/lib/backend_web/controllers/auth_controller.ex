@@ -30,7 +30,7 @@ defmodule BackendWeb.AuthController do
   def login(conn, %{"email" => email, "password" => password}) do
     user = Accounts.get_user_by_email(email)
     cond do
-      user && Bcrypt.verify_pass(password, user.password_hash) ->
+      user && Pbkdf2.verify_pass(password, user.password_hash) ->
         {:ok, token, _claims} = Guardian.encode_and_sign(user)
         json(conn, %{
           token: token,
@@ -70,7 +70,7 @@ defmodule BackendWeb.AuthController do
   def change_password(conn, %{"old_password" => old, "new_password" => new}) do
     user = Guardian.Plug.current_resource(conn)
     cond do
-      user && Bcrypt.verify_pass(old, user.password_hash) ->
+      user && Pbkdf2.verify_pass(old, user.password_hash) ->
         case Accounts.change_user_password(user, new) do
           {:ok, _user} -> json(conn, %{message: "Password aggiornata"})
           {:error, changeset} ->

@@ -52,6 +52,3 @@ config :backend, Backend.Guardian,
 
 # livello di log
 config :logger, level: :info
-
-# configurazioni specifiche per l'ambiente
-import_config "#{Mix.env()}.exs"
