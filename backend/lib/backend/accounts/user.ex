@@ -10,6 +10,7 @@ defmodule Backend.Accounts.User do
     field :password_hash, :string
     field :password, :string, virtual: true
     field :role, :string, default: "user"
+    field :is_admin, :boolean, default: false
 
     timestamps()
   end
@@ -29,14 +30,14 @@ defmodule Backend.Accounts.User do
   defp put_password_hash(changeset) do
     case get_change(changeset, :password) do
       nil -> changeset
-      password -> put_change(changeset, :password_hash, Bcrypt.hash_pwd_salt(password))
+      password -> put_change(changeset, :password_hash, Pbkdf2.hash_pwd_salt(password))
     end
   end
 
   # changeset per l'aggiornamento di un utente
   def update_changeset(user, attrs) do
     user
-    |> cast(attrs, [:email, :password])
+    |> cast(attrs, [:email, :password, :is_admin])
     |> validate_required([:email])
     |> unique_constraint(:email)
     |> validate_length(:password, min: 8, max: 12)

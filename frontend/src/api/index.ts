@@ -3,7 +3,7 @@ import type { AxiosError } from 'axios';
 import type { CardFilters } from '../hooks/useCards';
 
 // definisco l'url base per le chiamate API
-const API_BASE_URL = 'http://localhost:4000/api'; // modifica l'url in base alla tua configurazione
+const API_BASE_URL = 'http://localhost:4000/api'; 
 
 // creo un'istanza di axios per le chiamate API
 const api = axios.create({
@@ -255,10 +255,21 @@ export const deleteDeck = async (deckId: string, token: string) => {
 
 // funzione per ottenere la collezione dell'utente
 export interface Card {
+    id: string; 
+    name: string;
+    suit: string;
+    value: number;
+    points?: number;
+    image_url?: string;
+    set?: string;
+}
+
+// interfaccia per rappresentare un mazzo di carte
+export interface Deck {
     id: string;
     name: string;
-    description?: string;
-    imageUrl?: string;
+    cards: Card[];
+    isPublic: boolean;
 }
 
 export const fetchUserCollection = async (token: string): Promise<Card[]> => {

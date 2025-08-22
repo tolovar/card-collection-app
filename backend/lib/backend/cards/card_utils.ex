@@ -1,50 +1,4 @@
 defmodule Backend.Cards.CardUtils do
-  @suits [
-    {"bastoni"},
-    {"coppe"},
-    {"denari"},
-    {"spade"}
-  ]
-
-  @names [
-    {"asso"},
-    {"due"},
-    {"tre"},
-    {"quattro"},
-    {"cinque"},
-    {"sei"},
-    {"sette"},
-    {"fante"},
-    {"cavallo"},
-    {"re"}
-  ]
-  
-  @values [
-    {1},
-    {2},
-    {3},
-    {4},
-    {5},
-    {6},
-    {7},
-    {8},
-    {9},
-    {10}
-  ]
-  
-  @points [
-    {11},
-    {0},
-    {10},
-    {0},
-    {0},
-    {0},
-    {0},
-    {2},
-    {3},
-    {4}
-  ]
-
   @cards [
     %{name: "asso",    value: 1,  points: 11},
     %{name: "due",     value: 2,  points: 0},
@@ -66,5 +20,13 @@ defmodule Backend.Cards.CardUtils do
   ]
   def all_cards, do: @cards
 
-  def assign_suit(suit_code), do: Enum.find(@suits, fn {code, _} -> code == suit_code end) |> elem(1)
+  # utility per estrarre suit da id
+  def suit_from_id("B" <> _), do: "bastoni"
+  def suit_from_id("C" <> _), do: "coppe"
+  def suit_from_id("D" <> _), do: "denari"
+  def suit_from_id("S" <> _), do: "spade"
+  def suit_from_id(_), do: nil
+
+  # utility per estrarre value da id
+  def value_from_id(<<_suit, rest::binary>>), do: String.to_integer(rest)
 end

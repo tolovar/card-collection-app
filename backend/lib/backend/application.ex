@@ -6,6 +6,7 @@ defmodule Backend.Application do
     children = [
       BackendWeb.Telemetry,
       Backend.Repo,
+      Backend.Cache.CacheManager,
       {DNSCluster, query: Application.get_env(:backend, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Backend.PubSub},
       {Finch, name: Backend.Finch},

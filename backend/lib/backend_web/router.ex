@@ -9,6 +9,11 @@ defmodule BackendWeb.Router do
     plug BackendWeb.Plugs.AuthPipeline
   end
 
+  pipeline :admin do
+    plug BackendWeb.Plugs.LoadUserFromToken
+    plug BackendWeb.Plugs.AuthorizeAdmin
+  end
+
   # le rotte pubbliche (registrazione e login) restano fuori
   scope "/api", BackendWeb do
     pipe_through :api
@@ -31,6 +36,13 @@ defmodule BackendWeb.Router do
     post "/auth/update_profile", AuthController, :update_profile # aggiorno profilo protetto
 
     match :*, "/*path", BackendWeb.FallbackController, :not_found
+  end
+
+  scope "/admin", BackendWeb do
+    pipe_through [:api, :admin]
+    # inserisco le rotte riservate agli admin
+    resources "/users", UserController, only: [:index, :update, :delete]
+    # altre rotte admin da aggiungere quando ci penso
   end
 
   # abilito LiveDashboard e MailboxPreview in ambiente di sviluppo

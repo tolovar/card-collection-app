@@ -2,7 +2,9 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axiosConfig';
+import { useAuth } from '../contexts/AuthContext';
+import { User } from '../types';
 
 const Auth: React.FC = () => {
     // stato per gestire l'email e la password
@@ -10,23 +12,51 @@ const Auth: React.FC = () => {
     const [password, setPassword] = useState('');
     const [isLogin, setIsLogin] = useState(true); // stato per gestire login e registrazione
     const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     // funzione per gestire il submit del form
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
+        setIsLoading(true);
 
-        const url = isLogin ? '/api/login' : '/api/register'; // endpoint per login o registrazione
+        const url = isLogin ? '/api/users/login' : '/api/users/register'; // endpoint per login o registrazione
 
         try {
-            const response = await axios.post(url, { email, password });
-            // qui gestisco la risposta, ad esempio salvando il token JWT
-            localStorage.setItem('token', (response.data as { token: string }).token);
-            navigate('/'); // reindirizzo alla home dopo il login/registrazione
-        } catch (err) {
+            const response = await api.post(url, { email, password });
+            // controllo se la risposta è valida
+            if (
+                response &&
+                typeof response === 'object' &&
+                response.data &&
+                typeof response.data === 'object' &&
+                'token' in response.data &&
+                typeof (response.data as any).token === 'string'
+            ) {
+                const token = (response.data as any).token;
+                const user = (response.data as any).user as User;
+                
+                if (user) {
+                    // uso il context per salvare i dati dell'utente
+                    login(token, user);
+                    navigate('/'); // reindirizzo alla home dopo il login/registrazione
+                } else {
+                    setError('Dati utente mancanti nella risposta.');
+                }
+            } else {
+                setError('Risposta inattesa dal server.');
+            }
+        } catch (err: any) {
             // gestisco eventuali errori
-            setError('Errore durante l\'autenticazione. Riprova.');
+            if (err.response?.data?.error) {
+                setError(err.response.data.error);
+            } else {
+                setError('Errore durante l\'autenticazione. Riprova.');
+            }
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -52,7 +82,9 @@ const Auth: React.FC = () => {
                         required
                     />
                 </div>
-                <button type="submit">{isLogin ? 'Accedi' : 'Registrati'}</button>
+                <button type="submit" disabled={isLoading}>
+                    {isLoading ? 'Caricamento...' : (isLogin ? 'Accedi' : 'Registrati')}
+                </button>
                 {error && <p style={{ color: 'red' }}>{error}</p>}
             </form>
             <p>
