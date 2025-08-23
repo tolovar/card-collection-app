@@ -3,7 +3,6 @@ defmodule Backend.Cache.CacheManager do
   # gestisco il sistema di cache multi-livello per ottimizzare le performance.
   # implemento strategie di cache intelligenti con TTL dinamici e invalidazione automatica.
 
-
   use GenServer
   require Logger
 

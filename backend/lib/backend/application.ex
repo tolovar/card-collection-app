@@ -6,6 +6,7 @@ defmodule Backend.Application do
     children = [
       BackendWeb.Telemetry,
       Backend.Repo,
+      # avvio il cache manager per ottimizzare le performance
       Backend.Cache.CacheManager,
       {DNSCluster, query: Application.get_env(:backend, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Backend.PubSub},

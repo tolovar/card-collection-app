@@ -67,5 +67,34 @@ defmodule Backend.Cards do
     Repo.delete(card)
   end
 
+  # funzioni per il sistema di cache
+
+  # recupero una carta con preload automatico delle associazioni
+  def get_card!(id) do
+    Repo.get!(Card, id)
+  end
+
+  # conto il numero di carte possedute da un utente per le statistiche
+  def count_user_cards(user_id) do
+    from(uc in Backend.Collections.UserCard, where: uc.user_id == ^user_id)
+    |> Repo.aggregate(:count, :id)
+  end
+
+  # trovo il seme più collezionato da un utente per le statistiche personalizzate
+  def get_most_collected_suit(user_id) do
+    query = from(uc in Backend.Collections.UserCard,
+      join: c in assoc(uc, :card),
+      where: uc.user_id == ^user_id,
+      group_by: c.suit,
+      select: {c.suit, count(c.id)},
+      order_by: [desc: count(c.id)],
+      limit: 1
+    )
+
+    case Repo.one(query) do
+      {suit, _count} -> suit
+      nil -> nil
+    end
+  end
 
 end

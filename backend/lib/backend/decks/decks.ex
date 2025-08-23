@@ -20,6 +20,7 @@ defmodule Backend.Decks do
 
   # funzioni di supporto per il cache manager
 
+  # recupero i mazzi di un utente con filtri personalizzabili (cache)
   def list_decks_by_user(user_id, opts \\ %{}) do
     Deck
     |> where([d], d.user_id == ^user_id)
@@ -29,16 +30,19 @@ defmodule Backend.Decks do
     |> Repo.all()
   end
 
+  # conto i mazzi totali di un utente per le statistiche
   def count_user_decks(user_id) do
     from(d in Deck, where: d.user_id == ^user_id)
     |> Repo.aggregate(:count, :id)
   end
 
+  # conto solo i mazzi pubblici di un utente per le statistiche
   def count_public_decks_by_user(user_id) do
     from(d in Deck, where: d.user_id == ^user_id and d.public == true)
     |> Repo.aggregate(:count, :id)
   end
 
+  # trovo tutti i mazzi che contengono una carta specifica per l'invalidazione cache
   def get_decks_containing_card(card_id) do
     from(d in Deck,
       join: c in assoc(d, :cards),
