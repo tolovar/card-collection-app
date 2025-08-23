@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User } from '../types';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo, useCallback } from 'react';
+import type { User } from '../types/index';
 
 // definisco l'interfaccia per il context dell'autenticazione
 interface AuthContextType {
@@ -9,6 +9,7 @@ interface AuthContextType {
   logout: () => void;
   isAuthenticated: boolean;
   isAdmin: boolean;
+  isLoading: boolean;
 }
 
 // creo il context con un valore di default
@@ -23,55 +24,72 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   // controllo se c'è un token salvato al caricamento dell'app
   useEffect(() => {
-    const savedToken = localStorage.getItem('token');
-    const savedUser = localStorage.getItem('user');
-    
-    if (savedToken && savedUser) {
+    const initializeAuth = () => {
       try {
-        const parsedUser = JSON.parse(savedUser);
-        setToken(savedToken);
-        setUser(parsedUser);
+        const savedToken = localStorage.getItem('token');
+        const savedUser = localStorage.getItem('user');
+        
+        if (savedToken && savedUser) {
+          const parsedUser = JSON.parse(savedUser);
+          // Validazione aggiuntiva dei dati
+          if (parsedUser && typeof parsedUser === 'object' && 'id' in parsedUser) {
+            setToken(savedToken);
+            setUser(parsedUser);
+          } else {
+            throw new Error('Dati utente non validi');
+          }
+        }
       } catch (error) {
-        // se il parsing fallisce, pulisco i dati corrotti
+        console.warn('Errore nell\'inizializzazione dell\'auth:', error);
+        // Pulisco i dati corrotti
         localStorage.removeItem('token');
         localStorage.removeItem('user');
+      } finally {
+        setIsLoading(false);
       }
-    }
+    };
+
+    initializeAuth();
   }, []);
 
   // funzione per il login che salva token e user
-  const login = (newToken: string, newUser: User) => {
+  const login = useCallback((newToken: string, newUser: User) => {
+    // Validazione dei parametri
+    if (!newToken || typeof newToken !== 'string') {
+      throw new Error('Token non valido');
+    }
+    if (!newUser || typeof newUser !== 'object' || !('id' in newUser)) {
+      throw new Error('Dati utente non validi');
+    }
+
     setToken(newToken);
     setUser(newUser);
     localStorage.setItem('token', newToken);
     localStorage.setItem('user', JSON.stringify(newUser));
-  };
+  }, []);
 
   // funzione per il logout che pulisce tutto
-  const logout = () => {
+  const logout = useCallback(() => {
     setToken(null);
     setUser(null);
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-  };
+  }, []);
 
-  // calcolo se l'utente è autenticato
-  const isAuthenticated = !!token && !!user;
-  
-  // calcolo se l'utente è admin
-  const isAdmin = user?.is_admin || false;
-
-  const value: AuthContextType = {
+  // Memoizzazione del context value per evitare re-render inutili
+  const value: AuthContextType = useMemo(() => ({
     user,
     token,
     login,
     logout,
-    isAuthenticated,
-    isAdmin
-  };
+    isAuthenticated: !!token && !!user,
+    isAdmin: user?.is_admin || false,
+    isLoading
+  }), [user, token, login, logout, isLoading]);
 
   return (
     <AuthContext.Provider value={value}>
@@ -83,7 +101,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 // hook personalizzato per usare il context
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useAuth deve essere usato all\'interno di un AuthProvider');
   }
   return context;

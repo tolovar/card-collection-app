@@ -7,9 +7,9 @@ defmodule BackendWeb.DeckController do
 
   action_fallback BackendWeb.FallbackController
 
-  # Assegna il deck a conn.assigns per le azioni che lo richiedono
+  # assegno il deck a conn.assigns per le azioni che lo richiedono
   plug :load_deck when action in [:show, :update, :delete]
-  plug BackendWeb.Plugs.AuthorizeResource, resource: :deck when action in [:show, :update, :delete]
+  plug BackendWeb.Plugs.AuthorizeResource, [resource: :deck] when action in [:show, :update, :delete]
 
   defp load_deck(conn, _opts) do
     deck = Decks.get_deck!(conn.params["id"]) |> Repo.preload([:cards])

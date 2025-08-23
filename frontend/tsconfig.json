@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es6", // specifico la versione di JavaScript da utilizzare
-    "module": "commonjs", // specifico il sistema di moduli da utilizzare
+    "module": "esnext", // specifico il sistema di moduli da utilizzare
     "strict": true, // attivo il controllo rigoroso dei tipi
     "jsx": "react", // specifico che utilizzo React
     "esModuleInterop": true, // abilito l'interoperabilità con i moduli ES

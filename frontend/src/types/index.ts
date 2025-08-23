@@ -1,4 +1,4 @@
-// questo file definisce i tipi TypeScript utilizzati nell'applicazione
+// definisco i tipi TypeScript utilizzati nell'applicazione
 
 // definisco un'interfaccia per rappresentare una carta
 export interface Card {
@@ -18,11 +18,14 @@ export interface Deck {
 
 // definisco un'interfaccia per rappresentare un utente
 export interface User {
-    id: number; // identificatore unico dell'utente
-    email: string; // email dell'utente
-    collections?: Card[]; // collezione personale di carte dell'utente (opzionale)
-    is_admin: boolean; // se l'utente è admin
-    role?: string;     // se voglio gestire anche i ruoli
+    id: string; 
+    username: string; 
+    email: string;
+    is_admin?: boolean; 
+    collections?: Card[];
+    role?: string;
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 // definisco un'interfaccia per rappresentare la risposta dell'API per le carte

@@ -6,7 +6,7 @@ defmodule BackendWeb.DeckCardController do
 
   action_fallback BackendWeb.FallbackController
 
-  plug BackendWeb.Plugs.AuthorizeResource, resource: :deck when action in [:show, :update, :delete]
+  plug BackendWeb.Plugs.AuthorizeResource, [resource: :deck] when action in [:show, :update, :delete]
 
   # mostro tutte le carte nei mazzi
   def index(conn, _params) do

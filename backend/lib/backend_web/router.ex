@@ -28,9 +28,8 @@ defmodule BackendWeb.Router do
     resources "/cards", CardController, except: [:new, :edit]
     resources "/decks", DeckController, except: [:new, :edit]
     resources "/user_cards", UserCardController, except: [:new, :edit]
-    resources "/deck_cards", DeckCardController, except: [:new, :edit]
     resources "/users", UserController, except: [:new, :edit]
-    resources "/auth", AuthController, only: [:logout] # solo logout protetto
+    post "/auth/logout", AuthController, :logout # logout protetto
     post "/auth/refresh", AuthController, :refresh # refresh token protetto
     post "/auth/change_password", AuthController, :change_password # cambio password protetto
     post "/auth/update_profile", AuthController, :update_profile # aggiorno profilo protetto

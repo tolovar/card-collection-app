@@ -2,13 +2,13 @@ defmodule BackendWeb.UserCardController do
   use BackendWeb, :controller
 
   alias Backend.Cards
-  alias Backend.Cards.UserCard
+  alias Backend.Collections.UserCard
   alias Backend.Repo
 
   action_fallback BackendWeb.FallbackController
 
   plug :load_user_card when action in [:show, :update, :delete]
-  plug BackendWeb.Plugs.AuthorizeResource, resource: :user_card when action in [:show, :update, :delete]
+  plug BackendWeb.Plugs.AuthorizeResource, [resource: :user_card] when action in [:show, :update, :delete]
 
   defp load_user_card(conn, _opts) do
     user_card = Cards.get_user_card!(conn.params["id"]) |> Repo.preload([:card])

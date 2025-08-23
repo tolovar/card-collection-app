@@ -1,6 +1,9 @@
 import axios from 'axios';
-import type { AxiosError } from 'axios';
+// import type { AxiosError } from 'axios';
 import type { CardFilters } from '../hooks/useCards';
+
+// definisco tipo AxiosError come any, in teoria compatibile con tutte le versioni di Axios
+type AxiosError = any;
 
 // definisco l'url base per le chiamate API
 const API_BASE_URL = 'http://localhost:4000/api'; 
