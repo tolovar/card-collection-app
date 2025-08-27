@@ -41,17 +41,17 @@ defmodule Backend.Cache.CacheManager do
 
     case get_from_cache(:cards_cache, cache_key) do
       {:hit, card} ->
-        Logger.debug("Cache hit for card #{card_id}")
+  Logger.debug("cache trovata per la carta #{card_id}")
         card
       :miss ->
-        Logger.debug("Cache miss for card #{card_id}")
+  Logger.debug("cache non trovata per la carta #{card_id}")
         card = Backend.Cards.get_card!(card_id) |> Repo.preload([:decks])
         put_in_cache(:cards_cache, cache_key, card, @card_cache_ttl)
         card
     end
   end
 
-  # recupero i mazzi di un utente con cache intelligente
+  # recupero i mazzi di un utente con cache
 
   def get_user_decks(user_id, opts \\ %{}) do
     # Cache diversificata per opzioni di query
@@ -59,10 +59,10 @@ defmodule Backend.Cache.CacheManager do
 
     case get_from_cache(:decks_cache, cache_key) do
       {:hit, decks} ->
-        Logger.debug("Cache hit for user decks #{user_id}")
+  Logger.debug("cache trovata per i mazzi dell'utente #{user_id}")
         decks
       :miss ->
-        Logger.debug("Cache miss for user decks #{user_id}")
+  Logger.debug("cache non trovata per i mazzi dell'utente #{user_id}")
         decks = Backend.Decks.list_decks_by_user(user_id, opts) |> Repo.preload([:cards])
         put_in_cache(:decks_cache, cache_key, decks, @deck_cache_ttl)
         decks
@@ -174,7 +174,7 @@ defmodule Backend.Cache.CacheManager do
 
   @impl true
   def handle_info(:cleanup, state) do
-    Logger.info("Running cache cleanup")
+  Logger.info("eseguo la pulizia automatica della cache")
     cleanup_expired_entries()
     schedule_cleanup()
     {:noreply, state}
@@ -192,7 +192,7 @@ defmodule Backend.Cache.CacheManager do
       Enum.each(expired_keys, &:ets.delete(table, &1))
 
       if length(expired_keys) > 0 do
-        Logger.debug("Cleaned #{length(expired_keys)} expired entries from #{table}")
+        Logger.debug("ho rimosso #{length(expired_keys)} elementi scaduti dalla cache #{table}")
       end
     end)
   end
